@@ -1,6 +1,17 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useMutation, gql } from '@apollo/client';
 import '../styles/Column.css';
+
+const DELETE_PROJECT = gql`
+  mutation DeleteProject($projectId: ID!) {
+    deleteProject(projectId: $projectId) {
+      id
+      name
+      description
+    }
+  }
+`;
 
 const ProjectColumn = ({ id, title, description, createdAt, members }) => {
   const navigate = useNavigate();
@@ -15,6 +26,23 @@ const ProjectColumn = ({ id, title, description, createdAt, members }) => {
       month: "long",
       day: "numeric",
     });
+  };
+
+  const [deleteProject, { error, loading }] = useMutation(DELETE_PROJECT, {
+    variables: { projectId: id },
+    onCompleted: () => {
+        alert("Project deleted successfully!");
+        navigate("/"); // Redirect to home after deletion
+    },
+    onError: (error) => {
+        alert("Error deleting project: " + error.message);
+    },
+  });
+
+  const handleDelete = () => {
+      if (window.confirm("Are you sure you want to delete this project?")) {
+          deleteProject();
+      }
   };
 
   return (
@@ -42,6 +70,13 @@ const ProjectColumn = ({ id, title, description, createdAt, members }) => {
           )}
         </div>
       </div>
+      
+      <div className="column-footer">
+      <button className="deleteButton" onClick={handleDelete} disabled={loading}>
+      {loading ? 'Deleting...' : 'Delete'}
+      </button>
+      </div>
+
     </div>
   );
 };

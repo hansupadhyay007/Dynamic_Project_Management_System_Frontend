@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery, gql } from '@apollo/client';
 import ProjectColumn from './ProjectColumn';
 import '../styles/Board.css'
@@ -20,6 +21,11 @@ const GET_PROJECTS = gql`
 `;
 
 const DashBoard = () => {
+   const navigate = useNavigate();
+  const handleAddProject = () => {
+    navigate(`/project/add-project`); // Navigate to TaskForm page
+  };
+
   const { loading, error, data } = useQuery(GET_PROJECTS);
 
   if (loading) return <p>Loading...</p>;
@@ -38,7 +44,7 @@ const DashBoard = () => {
             members={project.team}/>
         ))}
       </div>
-      <button className='addButton'> Add New Project</button>
+      <button className='addButton' onClick={handleAddProject}> Add New Project</button>
     </div>
   );
 };

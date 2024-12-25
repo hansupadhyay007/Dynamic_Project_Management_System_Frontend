@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useMutation, gql } from '@apollo/client';
 import '../styles/TaskForm.css';
 
@@ -22,25 +23,30 @@ const ADD_TASK = gql`
   }
 `;
 
-const TaskForm = ({ projectId, closeForm }) => {
+const TaskForm = () => {
   const [formData, setFormData] = useState({
     title: '',
+    description: '',
     status: 'TODO',
     priority: 'Medium',
     dueDate: '',
   });
 
+  const { id: projectId } = useParams(); // Extract projectId from URL
+  const navigate = useNavigate();
+  
   const [addTask, { error, loading }] = useMutation(ADD_TASK, {
     variables: {
       projectId,
       title: formData.title,
+      description: formData.description,
       status: formData.status,
       priority: formData.priority,
       dueDate: formData.dueDate,
     },
     onCompleted: () => {
       alert('Task added successfully!');
-      closeForm();  // Close the form after successful submission
+      navigate(`/project/${projectId}`); // Redirect to TaskBoard
     },
     onError: () => {
       alert('Error adding task');
@@ -60,6 +66,10 @@ const TaskForm = ({ projectId, closeForm }) => {
     addTask();
   };
 
+  if (!projectId) {
+    return <p>Error: Project ID is required to add a task.</p>;
+  }
+
   return (
     <div className="task-form">
       <h2>Add New Task</h2>
@@ -71,6 +81,17 @@ const TaskForm = ({ projectId, closeForm }) => {
             id="title"
             name="title"
             value={formData.title}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="description">Description</label>
+          <input
+            type="text"
+            id="description"
+            name="description"
+            value={formData.description}
             onChange={handleChange}
             required
           />

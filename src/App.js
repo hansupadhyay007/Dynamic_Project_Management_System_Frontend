@@ -4,6 +4,7 @@ import DashBoard from './components/DashBoard';
 import TaskBoard from './components/TaskBoard';
 import TaskForm from './components/TaskForm'
 import './styles/Board.css';
+import AddProjectForm from './components/AddProjectForm';
 
 function App() {
   return (
@@ -15,6 +16,8 @@ function App() {
             <DashBoard />
           </div>
         } />
+
+        <Route path='/project/add-project' element={<AddProjectForm />} />
 
         <Route path='/project/:id' element={<TaskBoard />} />
 

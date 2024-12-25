@@ -1,38 +1,3 @@
-// import React from 'react';
-// import '../styles/Card.css';
-
-// const formatDate = (timestamp) => {
-//   const numericTimestamp = Number(timestamp);
-//   const validTimestamp = numericTimestamp > 9999999999 ? numericTimestamp : numericTimestamp * 1000;
-//   return new Date(validTimestamp).toLocaleDateString("en-US", {
-//     year: "numeric",
-//     month: "long",
-//     day: "numeric",
-//   });
-// };
-
-// const TaskCard = ({ task }) => {
-//   return (
-//     <div className="task-card">
-//       <h3>{task.title}</h3>
-//       <p><strong>Description:</strong> {task.description}</p>
-//       <p><strong>Priority:</strong> {task.priority}</p>
-//       <p><strong>Due Date:</strong> {formatDate(task.dueDate)}</p>
-//       {task.assignee && (
-//         <>
-//           <p><strong>Assignee:</strong> {task.assignee.name} ({task.assignee.role})</p>
-//         </>
-//       )}
-//       <button className="updateTask">Update Status</button>
-//     </div>
-//   );
-// };
-
-// export default TaskCard;
-
-
-
-
 import React from 'react';
 import { useMutation, gql } from '@apollo/client';
 import '../styles/Card.css';

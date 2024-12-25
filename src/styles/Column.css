@@ -96,3 +96,39 @@
     font-size: 12px;
   }
 }
+
+
+
+
+.column-footer {
+  display: flex;
+  justify-content: flex-end; /* Align the button to the right of the card */
+}
+
+.deleteButton {
+  background-color: red;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.deleteButton:hover {
+  background-color: darkred;
+}
+
+.deleteButton:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
+/* Responsiveness: Ensure the layout stays consistent across different screen sizes */
+@media (max-width: 768px) {
+  .column {
+    width: 100%;
+    margin: 10px 0;
+  }
+}

@@ -4,6 +4,15 @@ import { useQuery, gql } from '@apollo/client';
 import TaskColumn from './TaskColumn';
 import '../styles/Board.css';
 
+const GET_PROJECT_DETAILS = gql`
+  query GetProjectById($projectId: ID!) {
+    getProjectById(projectId: $projectId) {
+      id
+      name
+    }
+  }
+`;
+
 const GET_TASKS = gql`
   query getTasks($projectId: ID!) {
     getTasksByProject(projectId: $projectId) {
@@ -24,19 +33,26 @@ const GET_TASKS = gql`
 
 const TaskBoard = () => {
   const { id: projectId } = useParams(); // Get projectId from URL
-
+  
   const navigate = useNavigate();
   const handleAddTask = () => {
     navigate(`/project/${projectId}/add-task`); // Navigate to TaskForm page
   };
 
+  const { loading: projectloading, error: projecterror, data: projectdata } = useQuery(GET_PROJECT_DETAILS, {
+    variables: { projectId },
+  });
+
   const { loading, error, data } = useQuery(GET_TASKS, {
     variables: { projectId },
   });
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (loading || projectloading) return <p>Loading...</p>;
+  if (error || projecterror) return <p>Error: {error.message}</p>;
 
+  const projectName = projectdata?.getProjectById?.name;
+  console.log(projectName);
+  
   // Ensure tasks are safely populated and not undefined
   const tasks = data?.getTasksByProject || [];
   const todoTasks = tasks.filter(task => task?.status === 'TODO');
@@ -46,7 +62,7 @@ const TaskBoard = () => {
 
   return (
     <div className="board">
-      <h1>Project Management Board</h1>
+      <h1>Project Name: {projectName || 'Unknown'}</h1>
       <div className="columns">
         <TaskColumn title="TODO" tasks={todoTasks} />
         <TaskColumn title="In Progress" tasks={inProgressTasks} />
@@ -59,59 +75,3 @@ const TaskBoard = () => {
 };
 
 export default TaskBoard;
-
-
-
-
-
-
-
-// const GET_TASKS = gql`
-//   query getTasks($projectId: ID!) {
-//     getTasksByProject(projectId: $projectId) {
-//       id
-//       title
-//       description
-//       priority
-//       status
-//       dueDate
-//       assignee {
-//         name
-//         role
-//         email
-//       }
-//     }
-//   }
-// `;
-
-// const TaskBoard = () => {
-//   const { id: projectId } = useParams();
-//   const { loading, error, data } = useQuery(GET_TASKS, {
-//     variables: { projectId },
-//   });
-//   const [showForm, setShowForm] = useState(false);
-
-//   const tasks = data?.getTasksByProject || [];
-
-//   const toggleForm = () => setShowForm(!showForm);
-
-//   if (loading) return <p>Loading...</p>;
-//   if (error) return <p>Error: {error.message}</p>;
-
-//   return (
-//     <div className="board">
-//       <h1>Project Management Board</h1>
-//       <div className="columns">
-//         {tasks.map((task) => (
-//           <TaskColumn key={task.id} task={task} status={task.status} />
-//         ))}
-//       </div>
-
-//       <button className='addButton' onClick={toggleForm}>Add New Task</button>
-
-//       {showForm && <TaskForm projectId={projectId} closeForm={toggleForm} />}
-//     </div>
-//   );
-// };
-
-// export default TaskBoard;
